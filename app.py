@@ -53,6 +53,7 @@ def erstelle_app() -> gr.Blocks:
     return gr.ChatInterface(
         fn=antworten,
         additional_inputs=[sprachauswahl],
+        additional_inputs_accordion=gr.Accordion(label="Sprache auswählen", open=True),
         title="Konsulat-RAG",
         examples=[
             ["Welche Unterlagen brauche ich für einen Reisepass?", "🇩🇪 Deutsch"],
