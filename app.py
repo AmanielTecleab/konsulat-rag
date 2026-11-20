@@ -55,9 +55,9 @@ def erstelle_app() -> gr.Blocks:
         additional_inputs=[sprachauswahl],
         title="Konsulat-RAG",
         examples=[
-            "Welche Unterlagen brauche ich für einen Reisepass?",
-            "Wie beantrage ich ein Visum?",
-            "Wann hat das Generalkonsulat geöffnet?",
+            ["Welche Unterlagen brauche ich für einen Reisepass?", "🇩🇪 Deutsch"],
+            ["Wie beantrage ich ein Visum?", "🇩🇪 Deutsch"],
+            ["Wann hat das Generalkonsulat geöffnet?", "🇩🇪 Deutsch"],
         ],
         chatbot=gr.Chatbot(height=560),
         textbox=gr.Textbox(
