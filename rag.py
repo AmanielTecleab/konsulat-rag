@@ -53,6 +53,14 @@ def beantworte_frage(
     if top_k < 1:
         raise ValueError("top_k muss mindestens 1 sein.")
 
+    sprache_wert = (sprache or "Deutsch").casefold()
+    if "english" in sprache_wert or sprache_wert == "en":
+        sprache = "English"
+    elif "tigrinya" in sprache_wert or "ትግርኛ" in sprache_wert:
+        sprache = "Tigrinya"
+    else:
+        sprache = "Deutsch"
+
     frage_vektor = erstelle_embeddings([frage], client=openai_client)[0]
     treffer = qdrant_client.query_points(
         collection_name=QDRANT_COLLECTION,
@@ -88,7 +96,7 @@ def beantworte_frage(
 
     sprach_anweisung = {
         "Deutsch": "Antworte vollständig auf Deutsch.",
-        "English": "Answer completely in clear English.",
+        "English": "OUTPUT LANGUAGE: ENGLISH ONLY. Translate every heading, bullet, phrase, and summary into natural English. Do not include German sentences or headings.",
         "Tigrinya": "Verwende ausschließlich den tigrinischen Text aus den bereitgestellten geprüften Übersetzungsdateien und antworte natürlich auf Tigrinya.",
     }.get(sprache, "Antworte vollständig auf Deutsch.")
 

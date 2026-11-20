@@ -55,11 +55,6 @@ def erstelle_app() -> gr.Blocks:
         additional_inputs=[sprachauswahl],
         additional_inputs_accordion=gr.Accordion(label="Sprache auswählen", open=True),
         title="Konsulat-RAG",
-        examples=[
-            ["Welche Unterlagen brauche ich für einen Reisepass?", "🇩🇪 Deutsch"],
-            ["Wie beantrage ich ein Visum?", "🇩🇪 Deutsch"],
-            ["Wann hat das Generalkonsulat geöffnet?", "🇩🇪 Deutsch"],
-        ],
         chatbot=gr.Chatbot(height=560),
         textbox=gr.Textbox(
             placeholder="Stelle eine Frage zum Generalkonsulat Eritrea ...",
