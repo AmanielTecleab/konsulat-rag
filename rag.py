@@ -45,6 +45,7 @@ def beantworte_frage(
     openai_client: OpenAI,
     qdrant_client: QdrantClient,
     top_k: int = DEFAULT_TOP_K,
+    sprache: str = "Deutsch",
 ) -> tuple[str, list[str]]:
     if not frage.strip():
         raise ValueError("Die Frage darf nicht leer sein.")
@@ -78,11 +79,18 @@ def beantworte_frage(
         )
         quellen.append(f"[{nummer}] {dateiname}" + (f" ({quelle})" if quelle else ""))
 
+    sprach_anweisung = {
+        "Deutsch": "Antworte vollständig auf Deutsch.",
+        "English": "Answer completely in clear English.",
+        "Tigrinya": "ነቲ መልሲ ሙሉእ ብትግርኛ ምሃብ።",
+    }.get(sprache, "Antworte vollständig auf Deutsch.")
+
     antwort = openai_client.responses.create(
         model=modellname_ermitteln("OPENAI_CHAT_MODEL", CHAT_MODEL),
         instructions=(
-            "Du beantwortest Fragen zum Generalkonsulat Eritrea. Antworte knapp auf Deutsch "
-            "und verwende ausschließlich die bereitgestellten Fundstellen. Bei einer "
+            f"{sprach_anweisung} "
+            "Du beantwortest Fragen zum Generalkonsulat Eritrea und verwendest ausschließlich "
+            "die bereitgestellten Fundstellen. Bei einer "
             "allgemeinen Frage fasse die wichtigsten Punkte zusammen; wiederhole sie nicht "
             "am Ende. Prüfe Dateiname und Inhalt jeder Fundstelle und verwende nur Passagen "
             "zum exakt gleichen Vorgang wie in der Frage; ähnliche Begriffe aus anderen "

@@ -1,7 +1,6 @@
 import os
 
 import gradio as gr
-
 from dotenv import load_dotenv
 
 from llm_config import openai_client_erstellen
@@ -22,7 +21,7 @@ def erstelle_app() -> gr.Blocks:
             "Zuerst vektordg.py ausführen, um die Dokumente zu indexieren."
         )
 
-    def antworten(nachricht: str, verlauf: list[dict]) -> str:
+    def antworten(nachricht: str, verlauf: list[dict], sprache: str) -> str:
         del verlauf
         try:
             antwort, quellen = beantworte_frage(
@@ -30,6 +29,7 @@ def erstelle_app() -> gr.Blocks:
                 openai_client,
                 qdrant_client,
                 top_k=DEFAULT_TOP_K,
+                sprache=sprache,
             )
         except Exception as error:
             return f"Bei der Anfrage ist ein Fehler aufgetreten: {error}"
@@ -39,8 +39,16 @@ def erstelle_app() -> gr.Blocks:
             return f"{antwort}\n\n**Quellen**\n{quellen_text}"
         return antwort
 
+    sprachauswahl = gr.Dropdown(
+        choices=["Deutsch", "English", "Tigrinya"],
+        value="Deutsch",
+        label="Antwortsprache",
+        info="Die Suche bleibt deutsch; die Antwort wird in die gewählte Sprache übersetzt.",
+    )
+
     return gr.ChatInterface(
         fn=antworten,
+        additional_inputs=[sprachauswahl],
         title="Konsulat-RAG",
         examples=[
             "Welche Unterlagen brauche ich für einen Reisepass?",
