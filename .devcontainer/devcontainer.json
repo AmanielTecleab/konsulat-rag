@@ -1,0 +1,19 @@
+{
+  "name": "Konsulat-RAG",
+  "image": "mcr.microsoft.com/devcontainers/python:3.14",
+  "postCreateCommand": "python -m pip install -r requirements.txt",
+  "forwardPorts": [7860],
+  "portsAttributes": {
+    "7860": {
+      "label": "Konsulat-RAG",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}
