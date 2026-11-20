@@ -24,12 +24,16 @@ def erstelle_app() -> gr.Blocks:
     def antworten(nachricht: str, verlauf: list[dict], sprache: str) -> str:
         del verlauf
         try:
+            sprache_kurz = next(
+                (name for name in ("Deutsch", "English", "Tigrinya") if name in sprache),
+                "Deutsch",
+            )
             antwort, quellen = beantworte_frage(
                 nachricht,
                 openai_client,
                 qdrant_client,
                 top_k=DEFAULT_TOP_K,
-                sprache=sprache,
+                sprache=sprache_kurz,
             )
         except Exception as error:
             return f"Bei der Anfrage ist ein Fehler aufgetreten: {error}"
@@ -39,11 +43,11 @@ def erstelle_app() -> gr.Blocks:
             return f"{antwort}\n\n**Quellen**\n{quellen_text}"
         return antwort
 
-    sprachauswahl = gr.Dropdown(
-        choices=["Deutsch", "English", "Tigrinya"],
-        value="Deutsch",
+    sprachauswahl = gr.Radio(
+        choices=["🇩🇪 Deutsch", "🇬🇧 English", "🇪🇷 ትግርኛ"],
+        value="🇩🇪 Deutsch",
         label="Antwortsprache",
-        info="Die Suche bleibt deutsch; die Antwort wird in die gewählte Sprache übersetzt.",
+        info="Deutsch und English sind bereit. Tigrinya braucht geprüfte Übersetzungsdateien.",
     )
 
     return gr.ChatInterface(

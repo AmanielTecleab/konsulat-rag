@@ -1,5 +1,6 @@
 import argparse
 import re
+import os
 from pathlib import Path
 
 from openai import OpenAI
@@ -72,6 +73,12 @@ def beantworte_frage(
         quelle = str(payload.get("quelle", ""))
         kategorie = str(payload.get("kategorie", ""))
         text = str(payload.get("text", ""))
+        if sprache == "Tigrinya":
+            tigrinya_text = _tigrinya_text_laden(dateiname)
+            if tigrinya_text:
+                text = tigrinya_text
+            else:
+                return "ትግርኛ ወደ ህጋዊ ምንጭ አልተገኘም። እባክዎ እቲ ትግርኛ ትርጉም የተፈተሸ ፋይል ጨርሶ ይጫኑ።", []
 
         kontext_teile.append(
             f"[{nummer}] Datei: {dateiname}; Kategorie: {kategorie}; "
@@ -82,7 +89,7 @@ def beantworte_frage(
     sprach_anweisung = {
         "Deutsch": "Antworte vollständig auf Deutsch.",
         "English": "Answer completely in clear English.",
-        "Tigrinya": "ነቲ መልሲ ሙሉእ ብትግርኛ ምሃብ።",
+        "Tigrinya": "Verwende ausschließlich den tigrinischen Text aus den bereitgestellten geprüften Übersetzungsdateien und antworte natürlich auf Tigrinya.",
     }.get(sprache, "Antworte vollständig auf Deutsch.")
 
     antwort = openai_client.responses.create(
@@ -121,6 +128,16 @@ def _drucke_antwort(
         print("\nQuellen:")
         for quelle in quellen:
             print(f"  {quelle}")
+
+
+def _tigrinya_text_laden(dateiname: str) -> str | None:
+    stem = Path(dateiname).stem
+    uebersetzung = Path("translations") / "tigrinya" / f"{stem}.txt"
+    if not uebersetzung.is_file():
+        return None
+
+    text = uebersetzung.read_text(encoding="utf-8").strip()
+    return text or None
 
 
 def main() -> None:
