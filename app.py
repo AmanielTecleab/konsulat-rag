@@ -36,7 +36,11 @@ def erstelle_app() -> gr.Blocks:
                 sprache=sprache_kurz,
             )
         except Exception as error:
-            return f"Bei der Anfrage ist ein Fehler aufgetreten: {error}"
+            meldung = str(error)
+            status = getattr(error, "status_code", None)
+            if status == 401 or "401" in meldung or "AuthenticationError" in type(error).__name__:
+                return "Die Antwort kann nicht erzeugt werden: Der API-Schlüssel ist ungültig, abgelaufen oder nicht aktiviert. Erstelle einen gültigen OpenRouter-Schlüssel und starte die App danach neu."
+            return f"Bei der Anfrage ist ein Fehler aufgetreten: {meldung}"
 
         if quellen:
             quellen_text = "\n".join(f"- {quelle}" for quelle in quellen)
